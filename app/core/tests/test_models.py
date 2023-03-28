@@ -4,6 +4,7 @@ Tests for models.
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
+
 class ModelTests(TestCase):
     """Test models."""
 
@@ -11,10 +12,23 @@ class ModelTests(TestCase):
         """Test creating a user with an email in successful."""
         email = 'test@example.com'
         password = 'testpass123'
-        user = get_user_model().objects.create_user(
-            email = email,
-            password = password,
-        )
+        user = get_user_model().objects.create_user(email, password)
 
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
+
+    def test_new_user_email_normalized(self):
+        """Test email is normalized for new users."""
+        sample_emails = [
+            ['test1@EXAMPLE.com', 'test1@example.com'],
+            ['Test2@Example.com', 'Test2@example.com'],
+        ]
+        password = 'testpass123'
+
+        for sample_email in sample_emails:
+            caps_email = sample_email[0]
+            normalized_email = sample_email[1]
+            user = get_user_model().objects.create_user(caps_email, password)
+
+            self.assertEqual(user.email, normalized_email)
+            self.assertTrue(user.check_password(password))
