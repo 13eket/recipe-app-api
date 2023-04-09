@@ -28,7 +28,6 @@ class PublicUserAPITest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         user = get_user_model().objects.get(email=payload['email'])
-        print(payload['password'], user.password, user.check_password(payload['password']))
         self.assertTrue(user.check_password(payload['password']))
         self.assertNotIn('password', res.data)
 
@@ -69,17 +68,17 @@ class PublicUserAPITest(TestCase):
             'email': user_payload['email'],
             'password': user_payload['password']
         }
-        res = self.client.post(TOKEN_AUTH_URL, payload)
+        res = self.client.post(TOKEN_AUTH_URL, token_payload)
 
-        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn('token', res.data)
 
     def test_create_token_bad_credentials(self):
-        create_user(email='test@example.com', password='testpass123')
+        create_user(email='test@example.com', password='correctPass123')
 
         payload = {
             'email': 'test@example.com',
-            'password': 'testpass123'
+            'password': 'wrongPass123'
         }
 
         res = self.client.post(TOKEN_AUTH_URL, payload)
