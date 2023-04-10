@@ -31,5 +31,6 @@ class AuthTokenSerializer(serializers.Serializer):
             raise serializers.ValidationError('Unable to authenticate',
                                               code='authorization')
 
+        # This 'user' key is used in post() workflow for ObtainAuthToken API view
         data['user'] = user
         return data
