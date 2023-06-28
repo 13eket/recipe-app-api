@@ -95,7 +95,7 @@ class PublicUserAPITest(TestCase):
 class PrivateUserAPITest(TestCase):
     "Unit tests for authenticated user API requests"
 
-    def setUP(self):
+    def setUp(self):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             email='test@example.com',
